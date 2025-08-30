@@ -1,0 +1,44 @@
+library ieee;
+use ieee.std_logic_1164.all;
+--use IEEE.NUMERIC_STD.ALL;
+
+entity scan_dff is
+port(SI:in integer range 0 to 15;
+D:in integer range 0 to 15;
+clk: in std_logic;
+SE:in std_logic;
+
+--Q: out integer range 0 to 15;
+SO: out integer range 0 to 15);
+
+end entity scan_dff;
+
+architecture rtl of scan_dff is
+--signal count_reg:integer range 0 to 15;
+--signal SO_s:integer range 0 to 15;
+
+signal d_in: integer range 0 to 15;
+signal q_reg: integer range 0 to 15;
+
+begin
+d_in<=SI when SE='1' else D;
+
+process(clk)
+begin
+if clk'event and clk='1' then
+
+q_reg<=d_in;
+
+--else
+--SO<=SI;
+end if;
+end process;
+
+ -- Output assignments
+  
+    SO <= q_reg;  -- The scan output is the registered value
+
+--SO<=count;
+end architecture rtl;
+
+

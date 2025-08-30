@@ -1,0 +1,67 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use IEEE.NUMERIC_STD.ALL;
+
+entity scan_counter_DFF is
+port(SI:in integer range 0 to 15;
+D:in integer range 0 to 15;
+clk: in std_logic;
+SE:in std_logic;
+SO:out integer range 0 to 15;
+--count: out integer range 0 to 15;
+count: out integer range 0 to 15);
+
+end entity scan_counter_DFF;
+
+architecture rtl of scan_counter_DFF is
+component scan_dff
+port (SI: in integer range 0 to 15;
+D:in integer range 0 to 15;
+clk: in std_logic;
+SE:in std_logic;
+SO:out integer range 0 to 15);
+--Q: out integer range 0 to 15);  
+
+end component;
+
+    --signal Q_s: integer range 0 to 15 := 0;
+    signal counter_reg: integer range 0 to 15 := 0;  --internal signal
+    --signal dff_out: integer range 0 to 15;
+    
+begin
+    -- Instantiate the scan flip-flop
+    scan_ff: scan_dff
+    port map(
+        SI => SI,
+        D => D,
+        clk => clk,
+        SE => SE,
+        SO => SO);
+       
+    
+
+    -- Counter process
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            if SE = '1' then
+                -- Scan mode: increment counter
+                if counter_reg = 15 then
+                    counter_reg <= 0;
+                else
+                    counter_reg <= counter_reg + 1;
+                end if;
+            else
+                -- Normal mode: load value from D input
+                counter_reg <= D;
+            end if;
+        end if;
+    end process;
+
+    -- Output assignments
+ 
+    count <= counter_reg;
+
+end architecture rtl;
+
+

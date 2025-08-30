@@ -1,0 +1,63 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity tb_scan_dff is
+end entity tb_scan_dff;
+
+architecture test of tb_scan_dff is
+component scan_counter_Dff
+port(SI:in integer range 0 to 15;
+D:in integer range 0 to 15;
+clk: in std_logic;
+SE:in std_logic;
+SO:out integer range 0 to 15;
+
+count: out integer range 0 to 15);
+end component;
+
+constant PERIOD: time:=10 ns;
+
+signal clk_s: std_logic:='0';
+signal SE_s: std_logic:='0';
+signal SI_s:integer range 0 to 15;
+signal SO_s:integer range 0 to 15;
+signal D_s:integer range 0 to 15;
+signal count_s: integer range 0 to 15;
+
+
+begin
+clk_s<=not clk_s after PERIOD/2;      --clock generation
+
+dut:scan_counter_Dff port map(clk=>clk_s,SE=>SE_s,D=>D_s,SI=>SI_s,SO=>SO_s,count=>count_s);
+
+process
+begin
+SE_s<='1';
+
+SI_s<=1;wait for 10 ns;
+
+
+
+SI_s<=2;wait for 10 ns;
+
+
+SI_s<=3;wait for 10 ns;
+
+SI_s<=4;wait for 10 ns;
+
+
+ -- Test normal mode (SE = '0')
+        SE_s <= '0';
+        D_s <= 10;
+        wait for 10 ns;
+        
+        D_s <= 11;
+        wait for 10 ns;
+        
+        D_s <= 12;
+        wait for 10 ns;
+
+wait;
+
+end process;
+end architecture test;
